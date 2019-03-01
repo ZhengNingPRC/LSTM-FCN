@@ -1,23 +1,23 @@
 from keras.models import Model
-from keras.layers import Input, PReLU, Dense, LSTM, multiply, concatenate, Activation
+from keras.layers import Input, PReLU, Dense, LSTM, CuDNNLSTM, concatenate, Activation
 from keras.layers import Conv1D, BatchNormalization, GlobalAveragePooling1D, Permute, Dropout
 
-from utils.constants import MAX_SEQUENCE_LENGTH_LIST, NB_CLASSES_LIST
-from utils.keras_utils import train_model, evaluate_model, set_trainable, visualize_context_vector, visualize_cam
+from utils.constants import MAX_SEQUENCE_LENGTH_LIST, NB_CLASSES_LIST, TRAIN_FILES
+from utils.generic_utils import load_dataset_at
+from utils.keras_utils import visualize_filters
 from utils.layer_utils import AttentionLSTM
 
-DATASET_INDEX = 59
-
-MAX_SEQUENCE_LENGTH = MAX_SEQUENCE_LENGTH_LIST[DATASET_INDEX]
-NB_CLASS = NB_CLASSES_LIST[DATASET_INDEX]
-
-TRAINABLE = True
+import os
+import traceback
+import json
+from keras import backend as K
 
 
-def generate_model():
+def generate_lstmfcn(MAX_SEQUENCE_LENGTH, NB_CLASS, NUM_CELLS=8):
+
     ip = Input(shape=(1, MAX_SEQUENCE_LENGTH))
 
-    x = LSTM(8)(ip)
+    x = LSTM(NUM_CELLS)(ip)
     x = Dropout(0.8)(x)
 
     y = Permute((2, 1))(ip)
@@ -48,10 +48,11 @@ def generate_model():
     return model
 
 
-def generate_model_2():
+def generate_attention_lstmfcn(MAX_SEQUENCE_LENGTH, NB_CLASS, NUM_CELLS=8):
+
     ip = Input(shape=(1, MAX_SEQUENCE_LENGTH))
 
-    x = AttentionLSTM(8)(ip)
+    x = AttentionLSTM(NUM_CELLS)(ip)
     x = Dropout(0.8)(x)
 
     y = Permute((2, 1))(ip)
@@ -82,14 +83,37 @@ def generate_model_2():
     return model
 
 
-if __name__ == "__main__":
-    model = generate_model_2()
+if __name__ == '__main__':
+    # COMMON PARAMETERS
+    DATASET_ID = 0
+    num_cells = 8
+    model = generate_lstmfcn  # Select model to build
 
-    #train_model(model, DATASET_INDEX, dataset_prefix='mallat', epochs=2500, batch_size=128)
+    # OLD 85 DATASET PARAMETERS
+    dataset_name = '' # 'cbf'  # set to None to try to find out automatically for new datasets
 
-    evaluate_model(model, DATASET_INDEX, dataset_prefix='mallat', batch_size=128)
+    # NEW 43 DATASET PARAMETERS
+    model_name = 'lstmfcn'
 
-    # visualize_context_vector(model, DATASET_INDEX, dataset_prefix='mallat', visualize_sequence=True,
-    #                          visualize_classwise=True, limit=1)
+    # Visualizaion params
+    CONV_ID = 0
+    FILTER_ID = 0
 
-    # visualize_cam(model, DATASET_INDEX, dataset_prefix='mallat', class_id=0)
+    """ <<<<< SCRIPT SETUP >>>>> """
+    # Script setup
+    sequence_length = MAX_SEQUENCE_LENGTH_LIST[DATASET_ID]
+    nb_classes = NB_CLASSES_LIST[DATASET_ID]
+    model = model(sequence_length, nb_classes, num_cells)
+
+    if DATASET_ID >= 85:
+        dataset_name = None
+
+    if dataset_name is None:
+        base_weights_dir = '%s_%d_cells_weights/'
+        dataset_name = TRAIN_FILES[DATASET_ID][8:-6]
+        weights_dir = base_weights_dir % (model_name, num_cells)
+
+        dataset_name = weights_dir + dataset_name
+
+    visualize_filters(model, DATASET_ID, dataset_name, conv_id=CONV_ID, filter_id=FILTER_ID, seed=0,
+                      normalize_timeseries=True)
