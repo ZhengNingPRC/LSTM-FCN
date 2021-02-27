@@ -2,7 +2,7 @@ TRAIN_FILES = ['../data//Adiac_TRAIN',  # 0
                '../data//ArrowHead_TRAIN',  # 1
                '../data//ChlorineConcentration_TRAIN',  # 2
                '../data//InsectWingbeatSound_TRAIN',  # 3
-               '../data//Lighting7_TRAIN',  # 4
+               '../data//Lightning7_TRAIN',  # 4
                '../data//Wine_TRAIN',  # 5
                '../data//WordsSynonyms_TRAIN',  # 6
                '../data//50words_TRAIN',  # 7
@@ -56,7 +56,7 @@ TRAIN_FILES = ['../data//Adiac_TRAIN',  # 0
                '../data//Herring_TRAIN',  # 55
                '../data//InlineSkate_TRAIN',  # 56
                '../data//LargeKitchenAppliances_TRAIN',  # 57
-               '../data//Lighting2_TRAIN',  # 58
+               '../data//Lightning2_TRAIN',  # 58
                '../data//Mallat_TRAIN',  # 59
                '../data//Meat_TRAIN',  # 60
                '../data//NonInvasiveFatalECG_Thorax1_TRAIN',  # 61
@@ -132,7 +132,7 @@ TEST_FILES = ['../data//Adiac_TEST',  # 0
               '../data//ArrowHead_TEST',  # 1
               '../data//ChlorineConcentration_TEST',  # 2
               '../data//InsectWingbeatSound_TEST',  # 3
-              '../data//Lighting7_TEST',  # 4
+              '../data//Lightning7_TEST',  # 4
               '../data//Wine_TEST',  # 5
               '../data//WordsSynonyms_TEST',  # 6
               '../data//50words_TEST',  # 7
@@ -186,7 +186,7 @@ TEST_FILES = ['../data//Adiac_TEST',  # 0
               '../data//Herring_TEST',  # 55
               '../data//InlineSkate_TEST',  # 56
               '../data//LargeKitchenAppliances_TEST',  # 57
-              '../data//Lighting2_TEST',  # 58
+              '../data//Lightning2_TEST',  # 58
               '../data//Mallat_TEST',  # 59
               '../data//Meat_TEST',  # 60
               '../data//NonInvasiveFatalECG_Thorax1_TEST',  # 61
